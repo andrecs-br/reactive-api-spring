@@ -43,20 +43,30 @@ public class LoadData implements CommandLineRunner {
 	}
 	
 	private void loadCategories() {
-		Category fruits = new Category();
-        fruits.setDescription("Fruits");
+		Category fruits = Category
+				.builder()
+				.description("Fuits")
+				.build();
 
-        Category dried = new Category();
-        dried.setDescription("Dried");
+        Category dried = Category
+        		.builder()
+        		.description("Dried")
+        		.build();;
 
-        Category fresh = new Category();
-        fresh.setDescription("Fresh");
+        Category fresh = Category
+        		.builder()
+        		.description("Fresh")
+        		.build();
 
-        Category exotic = new Category();
-        exotic.setDescription("Exotic");
+        Category exotic = Category
+        		.builder()
+        		.description("Exotic")
+        		.build();
 
-        Category nuts = new Category();
-        nuts.setDescription("Nuts");
+        Category nuts = Category
+        		.builder()
+        		.description("Nuts")
+        		.build();
 
         categoryRepository.save(fruits).block();
         categoryRepository.save(dried).block();
@@ -66,16 +76,21 @@ public class LoadData implements CommandLineRunner {
 	}
 
 	private void loadVendors() {
-		Vendor vendor = new Vendor();
-        vendor.setId(UUID.randomUUID().toString());
-        vendor.setFirstName("Andre");
-        vendor.setLastName("Silva");
+		
+		Vendor vendor = Vendor
+				.builder()
+				.id(UUID.randomUUID().toString())
+				.firstName("Andre")
+				.lastName("Silva")
+				.build();
 
-        Vendor vendor2 = new Vendor();
-        vendor2.setId(UUID.randomUUID().toString());
-        vendor2.setFirstName("Leandro");
-        vendor2.setLastName("Silva");
-        
+		Vendor vendor2 = Vendor
+				.builder()
+				.id(UUID.randomUUID().toString())
+				.firstName("Leandro")
+				.lastName("Silva")
+				.build();
+
         vendorRepository.save(vendor).block();
         vendorRepository.save(vendor2).block();
 	}
