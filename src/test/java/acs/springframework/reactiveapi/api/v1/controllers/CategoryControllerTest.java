@@ -1,6 +1,7 @@
 package acs.springframework.reactiveapi.api.v1.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -83,6 +84,41 @@ public class CategoryControllerTest {
                 .body(categoryStream, Category.class)
                 .exchange()
                 .expectStatus().isCreated();
+
+    }
+
+    @Test
+    public void updateCategory() {
+        BDDMockito.given(categoryRepository.save(any(Category.class)))
+                .willReturn(Mono.just(Category.builder().build()));
+
+        Mono<Category> category = Mono.just(Category.builder().description("Cat").build());
+        
+        webTestClient.put()
+                .uri("/api/v1/categories/1")
+                .body(category, Category.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Category.class);
+
+    }
+
+    @Test
+    public void patchCategory() {
+    	BDDMockito.given(categoryRepository.findById(anyString()))
+        		.willReturn(Mono.just(Category.builder().id("1").build()));
+    	
+        BDDMockito.given(categoryRepository.save(any(Category.class)))
+                .willReturn(Mono.just(Category.builder().build()));
+
+        Mono<Category> category = Mono.just(Category.builder().description("Cat").build());
+        
+        webTestClient.patch()
+                .uri("/api/v1/categories/1")
+                .body(category, Category.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Category.class);
 
     }
 

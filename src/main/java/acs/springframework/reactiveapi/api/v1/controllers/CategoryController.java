@@ -4,8 +4,10 @@ import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -52,4 +54,29 @@ public class CategoryController {
 	public Mono<Void> createCategories(@RequestBody Publisher<Category> categoryStream) {
 		return categoryRepository.saveAll(categoryStream).then();
 	}
+	
+	@PutMapping("/{idCategory}")
+	@ResponseStatus(HttpStatus.OK)
+	public Mono<Category> updateCategory(@PathVariable String idCategory, @RequestBody Category category) {
+		category.setId(idCategory);
+		return categoryRepository.save(category);
+	}
+
+	@PatchMapping("/{idCategory}")
+	@ResponseStatus(HttpStatus.OK)
+	public Mono<Category> patchCategory(@PathVariable String idCategory, @RequestBody Category category) {
+		return categoryRepository
+				.findById(idCategory)
+				.switchIfEmpty(
+						Mono.defer(() -> Mono.error(new ResourceNotFoundException())
+				))
+				.flatMap(categorySaved -> {
+					if (category.getDescription() != null) {
+						categorySaved.setDescription(category.getDescription());
+					}
+					return categoryRepository.save(categorySaved);
+				});
+
+	}
+
 }
